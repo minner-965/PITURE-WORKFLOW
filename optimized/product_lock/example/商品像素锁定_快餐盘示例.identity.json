@@ -1,0 +1,64 @@
+{
+  "method": "product_pixel_lock",
+  "canvas": 1024,
+  "output": 800,
+  "edit_band_px": 96,
+  "edge_protect_px": 3,
+  "feather_px": 8,
+  "cfg": 1.0,
+  "steps": 4,
+  "seed": 202611100001,
+  "models": {
+    "unet": "flux-2-klein-4b-Q5_K_M.gguf",
+    "clip": "Qwen3-4B-Q4_K_M.gguf",
+    "vae": "flux2-vae.safetensors"
+  },
+  "placements": [
+    {
+      "index": 1,
+      "cutout": "ComfyProductPipeline/lock_demo/plate_red_rear_rgba.png",
+      "source_size": [
+        3500,
+        2000
+      ],
+      "placed": [
+        470,
+        250,
+        520,
+        297
+      ],
+      "width_ratio": 0.508,
+      "food": false
+    },
+    {
+      "index": 2,
+      "cutout": "ComfyProductPipeline/lock_demo/plate_red_front_rgba.png",
+      "source_size": [
+        3500,
+        2000
+      ],
+      "placed": [
+        96,
+        430,
+        832,
+        475
+      ],
+      "width_ratio": 0.812,
+      "food": true
+    }
+  ],
+  "final_crop_xywh": [
+    0,
+    0,
+    1024,
+    1024
+  ],
+  "outputs": {
+    "23": "result",
+    "26": "800",
+    "60": "layout",
+    "61": "raw",
+    "63": "protect",
+    "65": "edit"
+  }
+}

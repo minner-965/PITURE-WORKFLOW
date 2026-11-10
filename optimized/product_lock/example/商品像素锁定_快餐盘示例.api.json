@@ -1,0 +1,921 @@
+{
+  "1": {
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "输入 · 已审背景"
+    },
+    "inputs": {
+      "image": "ComfyProductPipeline/lock_demo/background.png"
+    }
+  },
+  "3": {
+    "class_type": "UnetLoaderGGUF",
+    "_meta": {
+      "title": "模型 · Klein"
+    },
+    "inputs": {
+      "unet_name": "flux-2-klein-4b-Q5_K_M.gguf"
+    }
+  },
+  "4": {
+    "class_type": "CLIPLoaderGGUF",
+    "_meta": {
+      "title": "模型 · 文本编码器"
+    },
+    "inputs": {
+      "clip_name": "Qwen3-4B-Q4_K_M.gguf",
+      "type": "flux2"
+    }
+  },
+  "5": {
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "模型 · VAE"
+    },
+    "inputs": {
+      "vae_name": "flux2-vae.safetensors"
+    }
+  },
+  "6": {
+    "class_type": "ImageScale",
+    "_meta": {
+      "title": "背景 · 等比到画布"
+    },
+    "inputs": {
+      "image": [
+        "1",
+        0
+      ],
+      "upscale_method": "lanczos",
+      "width": 1024,
+      "height": 1024,
+      "crop": "disabled"
+    }
+  },
+  "30": {
+    "class_type": "SolidMask",
+    "_meta": {
+      "title": "空蒙版 · 商品累计"
+    },
+    "inputs": {
+      "value": 0.0,
+      "width": 1024,
+      "height": 1024
+    }
+  },
+  "31": {
+    "class_type": "SolidMask",
+    "_meta": {
+      "title": "空蒙版 · 食物累计"
+    },
+    "inputs": {
+      "value": 0.0,
+      "width": 1024,
+      "height": 1024
+    }
+  },
+  "100": {
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "输入 · 商品 1 实拍抠图（透明底）"
+    },
+    "inputs": {
+      "image": "ComfyProductPipeline/lock_demo/plate_red_rear_rgba.png"
+    }
+  },
+  "101": {
+    "class_type": "InvertMask",
+    "_meta": {
+      "title": "商品 1 · 透明通道转商品蒙版"
+    },
+    "inputs": {
+      "mask": [
+        "100",
+        1
+      ]
+    }
+  },
+  "102": {
+    "class_type": "ImageScale",
+    "_meta": {
+      "title": "商品 1 · 等比缩放像素"
+    },
+    "inputs": {
+      "image": [
+        "100",
+        0
+      ],
+      "upscale_method": "lanczos",
+      "width": 520,
+      "height": 297,
+      "crop": "disabled"
+    }
+  },
+  "103": {
+    "class_type": "MaskToImage",
+    "_meta": {
+      "title": "商品 1 · 蒙版转图"
+    },
+    "inputs": {
+      "mask": [
+        "101",
+        0
+      ]
+    }
+  },
+  "104": {
+    "class_type": "ImageScale",
+    "_meta": {
+      "title": "商品 1 · 等比缩放蒙版"
+    },
+    "inputs": {
+      "image": [
+        "103",
+        0
+      ],
+      "upscale_method": "lanczos",
+      "width": 520,
+      "height": 297,
+      "crop": "disabled"
+    }
+  },
+  "105": {
+    "class_type": "ImageToMask",
+    "_meta": {
+      "title": "商品 1 · 缩放后蒙版"
+    },
+    "inputs": {
+      "image": [
+        "104",
+        0
+      ],
+      "channel": "red"
+    }
+  },
+  "106": {
+    "class_type": "ImageCompositeMasked",
+    "_meta": {
+      "title": "商品 1 · 实拍像素贴入布局"
+    },
+    "inputs": {
+      "destination": [
+        "6",
+        0
+      ],
+      "source": [
+        "102",
+        0
+      ],
+      "mask": [
+        "105",
+        0
+      ],
+      "x": 470,
+      "y": 250,
+      "resize_source": false
+    }
+  },
+  "107": {
+    "class_type": "MaskComposite",
+    "_meta": {
+      "title": "商品 1 · 计入商品蒙版"
+    },
+    "inputs": {
+      "destination": [
+        "30",
+        0
+      ],
+      "source": [
+        "105",
+        0
+      ],
+      "x": 470,
+      "y": 250,
+      "operation": "add"
+    }
+  },
+  "108": {
+    "class_type": "MaskComposite",
+    "_meta": {
+      "title": "商品 1 · 遮挡后方食物区"
+    },
+    "inputs": {
+      "destination": [
+        "31",
+        0
+      ],
+      "source": [
+        "105",
+        0
+      ],
+      "x": 470,
+      "y": 250,
+      "operation": "subtract"
+    }
+  },
+  "120": {
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "输入 · 商品 2 实拍抠图（透明底）"
+    },
+    "inputs": {
+      "image": "ComfyProductPipeline/lock_demo/plate_red_front_rgba.png"
+    }
+  },
+  "121": {
+    "class_type": "InvertMask",
+    "_meta": {
+      "title": "商品 2 · 透明通道转商品蒙版"
+    },
+    "inputs": {
+      "mask": [
+        "120",
+        1
+      ]
+    }
+  },
+  "122": {
+    "class_type": "ImageScale",
+    "_meta": {
+      "title": "商品 2 · 等比缩放像素"
+    },
+    "inputs": {
+      "image": [
+        "120",
+        0
+      ],
+      "upscale_method": "lanczos",
+      "width": 832,
+      "height": 475,
+      "crop": "disabled"
+    }
+  },
+  "123": {
+    "class_type": "MaskToImage",
+    "_meta": {
+      "title": "商品 2 · 蒙版转图"
+    },
+    "inputs": {
+      "mask": [
+        "121",
+        0
+      ]
+    }
+  },
+  "124": {
+    "class_type": "ImageScale",
+    "_meta": {
+      "title": "商品 2 · 等比缩放蒙版"
+    },
+    "inputs": {
+      "image": [
+        "123",
+        0
+      ],
+      "upscale_method": "lanczos",
+      "width": 832,
+      "height": 475,
+      "crop": "disabled"
+    }
+  },
+  "125": {
+    "class_type": "ImageToMask",
+    "_meta": {
+      "title": "商品 2 · 缩放后蒙版"
+    },
+    "inputs": {
+      "image": [
+        "124",
+        0
+      ],
+      "channel": "red"
+    }
+  },
+  "126": {
+    "class_type": "ImageCompositeMasked",
+    "_meta": {
+      "title": "商品 2 · 实拍像素贴入布局"
+    },
+    "inputs": {
+      "destination": [
+        "106",
+        0
+      ],
+      "source": [
+        "122",
+        0
+      ],
+      "mask": [
+        "125",
+        0
+      ],
+      "x": 96,
+      "y": 430,
+      "resize_source": false
+    }
+  },
+  "127": {
+    "class_type": "MaskComposite",
+    "_meta": {
+      "title": "商品 2 · 计入商品蒙版"
+    },
+    "inputs": {
+      "destination": [
+        "107",
+        0
+      ],
+      "source": [
+        "125",
+        0
+      ],
+      "x": 96,
+      "y": 430,
+      "operation": "add"
+    }
+  },
+  "128": {
+    "class_type": "MaskComposite",
+    "_meta": {
+      "title": "商品 2 · 遮挡后方食物区"
+    },
+    "inputs": {
+      "destination": [
+        "108",
+        0
+      ],
+      "source": [
+        "125",
+        0
+      ],
+      "x": 96,
+      "y": 430,
+      "operation": "subtract"
+    }
+  },
+  "129": {
+    "class_type": "LoadImageMask",
+    "_meta": {
+      "title": "输入 · 商品 2 食物许可区（白=可画食物）"
+    },
+    "inputs": {
+      "image": "ComfyProductPipeline/lock_demo/plate_red_front_food.png",
+      "channel": "red"
+    }
+  },
+  "130": {
+    "class_type": "MaskToImage",
+    "_meta": {
+      "title": "商品 2 · 食物区转图"
+    },
+    "inputs": {
+      "mask": [
+        "129",
+        0
+      ]
+    }
+  },
+  "131": {
+    "class_type": "ImageScale",
+    "_meta": {
+      "title": "商品 2 · 食物区等比缩放"
+    },
+    "inputs": {
+      "image": [
+        "130",
+        0
+      ],
+      "upscale_method": "lanczos",
+      "width": 832,
+      "height": 475,
+      "crop": "disabled"
+    }
+  },
+  "132": {
+    "class_type": "ImageToMask",
+    "_meta": {
+      "title": "商品 2 · 缩放后食物区"
+    },
+    "inputs": {
+      "image": [
+        "131",
+        0
+      ],
+      "channel": "red"
+    }
+  },
+  "133": {
+    "class_type": "MaskComposite",
+    "_meta": {
+      "title": "商品 2 · 计入食物许可区"
+    },
+    "inputs": {
+      "destination": [
+        "128",
+        0
+      ],
+      "source": [
+        "132",
+        0
+      ],
+      "x": 96,
+      "y": 430,
+      "operation": "add"
+    }
+  },
+  "40": {
+    "class_type": "ThresholdMask",
+    "_meta": {
+      "title": "商品蒙版 · 二值"
+    },
+    "inputs": {
+      "mask": [
+        "127",
+        0
+      ],
+      "value": 0.5
+    }
+  },
+  "41": {
+    "class_type": "GrowMask",
+    "_meta": {
+      "title": "商品核心 · 内缩 3px"
+    },
+    "inputs": {
+      "mask": [
+        "40",
+        0
+      ],
+      "expand": -3,
+      "tapered_corners": true
+    }
+  },
+  "42": {
+    "class_type": "MaskComposite",
+    "_meta": {
+      "title": "食物许可区 · 限制在商品核心内"
+    },
+    "inputs": {
+      "destination": [
+        "133",
+        0
+      ],
+      "source": [
+        "41",
+        0
+      ],
+      "x": 0,
+      "y": 0,
+      "operation": "multiply"
+    }
+  },
+  "43": {
+    "class_type": "MaskComposite",
+    "_meta": {
+      "title": "保护区 · 实拍像素不许改"
+    },
+    "inputs": {
+      "destination": [
+        "41",
+        0
+      ],
+      "source": [
+        "42",
+        0
+      ],
+      "x": 0,
+      "y": 0,
+      "operation": "subtract"
+    }
+  },
+  "44": {
+    "class_type": "GrowMask",
+    "_meta": {
+      "title": "落影环带 · 商品外扩 96px"
+    },
+    "inputs": {
+      "mask": [
+        "40",
+        0
+      ],
+      "expand": 96,
+      "tapered_corners": true
+    }
+  },
+  "45": {
+    "class_type": "MaskComposite",
+    "_meta": {
+      "title": "许可区 · 硬边"
+    },
+    "inputs": {
+      "destination": [
+        "44",
+        0
+      ],
+      "source": [
+        "43",
+        0
+      ],
+      "x": 0,
+      "y": 0,
+      "operation": "subtract"
+    }
+  },
+  "46": {
+    "class_type": "MaskToImage",
+    "_meta": {
+      "title": "许可区转图"
+    },
+    "inputs": {
+      "mask": [
+        "45",
+        0
+      ]
+    }
+  },
+  "47": {
+    "class_type": "ImageBlur",
+    "_meta": {
+      "title": "许可区羽化 8px"
+    },
+    "inputs": {
+      "image": [
+        "46",
+        0
+      ],
+      "blur_radius": 8,
+      "sigma": 4.0
+    }
+  },
+  "48": {
+    "class_type": "ImageToMask",
+    "_meta": {
+      "title": "羽化后许可区"
+    },
+    "inputs": {
+      "image": [
+        "47",
+        0
+      ],
+      "channel": "red"
+    }
+  },
+  "49": {
+    "class_type": "MaskComposite",
+    "_meta": {
+      "title": "最终许可区 · 羽化后再扣保护区"
+    },
+    "inputs": {
+      "destination": [
+        "48",
+        0
+      ],
+      "source": [
+        "43",
+        0
+      ],
+      "x": 0,
+      "y": 0,
+      "operation": "subtract"
+    }
+  },
+  "8": {
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "正向提示词 · 只写落影、光线、食物"
+    },
+    "inputs": {
+      "clip": [
+        "4",
+        0
+      ],
+      "text": "Keep the photograph exactly as it is. Add a soft natural contact shadow and a faint tabletop reflection directly under both plates, matching the warm daylight coming from the upper left. On the front plate, serve a low, naturally spread portion of steamed white rice with stir-fried pork strips and soft green pepper, lightly coated in a glossy brown sauce, with small shadows where the food touches the white surface. Leave a wide margin of clean white plate visible around the food."
+    }
+  },
+  "9": {
+    "class_type": "ConditioningZeroOut",
+    "_meta": {
+      "title": "负向 · CFG=1 时不参与计算"
+    },
+    "inputs": {
+      "conditioning": [
+        "8",
+        0
+      ]
+    }
+  },
+  "10": {
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "布局图编码"
+    },
+    "inputs": {
+      "pixels": [
+        "126",
+        0
+      ],
+      "vae": [
+        "5",
+        0
+      ]
+    }
+  },
+  "12": {
+    "class_type": "ReferenceLatent",
+    "_meta": {
+      "title": "正向参考 · 布局图"
+    },
+    "inputs": {
+      "conditioning": [
+        "8",
+        0
+      ],
+      "latent": [
+        "10",
+        0
+      ]
+    }
+  },
+  "13": {
+    "class_type": "ReferenceLatent",
+    "_meta": {
+      "title": "负向参考 · 布局图"
+    },
+    "inputs": {
+      "conditioning": [
+        "9",
+        0
+      ],
+      "latent": [
+        "10",
+        0
+      ]
+    }
+  },
+  "16": {
+    "class_type": "CFGGuider",
+    "_meta": {
+      "title": "引导"
+    },
+    "inputs": {
+      "model": [
+        "3",
+        0
+      ],
+      "positive": [
+        "12",
+        0
+      ],
+      "negative": [
+        "13",
+        0
+      ],
+      "cfg": 1.0
+    }
+  },
+  "18": {
+    "class_type": "Flux2Scheduler",
+    "_meta": {
+      "title": "调度"
+    },
+    "inputs": {
+      "steps": 4,
+      "width": 1024,
+      "height": 1024
+    }
+  },
+  "19": {
+    "class_type": "RandomNoise",
+    "_meta": {
+      "title": "种子"
+    },
+    "inputs": {
+      "noise_seed": 202611100001
+    }
+  },
+  "20": {
+    "class_type": "KSamplerSelect",
+    "_meta": {
+      "title": "采样器"
+    },
+    "inputs": {
+      "sampler_name": "euler"
+    }
+  },
+  "50": {
+    "class_type": "SetLatentNoiseMask",
+    "_meta": {
+      "title": "只在许可区采样"
+    },
+    "inputs": {
+      "samples": [
+        "10",
+        0
+      ],
+      "mask": [
+        "49",
+        0
+      ]
+    }
+  },
+  "21": {
+    "class_type": "SamplerCustomAdvanced",
+    "_meta": {
+      "title": "采样"
+    },
+    "inputs": {
+      "noise": [
+        "19",
+        0
+      ],
+      "guider": [
+        "16",
+        0
+      ],
+      "sampler": [
+        "20",
+        0
+      ],
+      "sigmas": [
+        "18",
+        0
+      ],
+      "latent_image": [
+        "50",
+        0
+      ]
+    }
+  },
+  "22": {
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "解码"
+    },
+    "inputs": {
+      "samples": [
+        "21",
+        0
+      ],
+      "vae": [
+        "5",
+        0
+      ]
+    }
+  },
+  "51": {
+    "class_type": "ImageCompositeMasked",
+    "_meta": {
+      "title": "像素级回贴 · 保护区保持实拍原样"
+    },
+    "inputs": {
+      "destination": [
+        "126",
+        0
+      ],
+      "source": [
+        "22",
+        0
+      ],
+      "mask": [
+        "49",
+        0
+      ],
+      "x": 0,
+      "y": 0,
+      "resize_source": false
+    }
+  },
+  "23": {
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "保存 · 成图母图"
+    },
+    "inputs": {
+      "images": [
+        "51",
+        0
+      ],
+      "filename_prefix": "product_lock/demo/B05_result"
+    }
+  },
+  "24": {
+    "class_type": "ImageCrop",
+    "_meta": {
+      "title": "成图取景 · 正方形"
+    },
+    "inputs": {
+      "image": [
+        "51",
+        0
+      ],
+      "width": 1024,
+      "height": 1024,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "25": {
+    "class_type": "ImageScale",
+    "_meta": {
+      "title": "等比缩放 · 800"
+    },
+    "inputs": {
+      "image": [
+        "24",
+        0
+      ],
+      "upscale_method": "lanczos",
+      "width": 800,
+      "height": 800,
+      "crop": "disabled"
+    }
+  },
+  "26": {
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "保存 · 800 无字主图"
+    },
+    "inputs": {
+      "images": [
+        "25",
+        0
+      ],
+      "filename_prefix": "product_lock/demo/B05_800"
+    }
+  },
+  "60": {
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "留档 · 布局图（采样前）"
+    },
+    "inputs": {
+      "images": [
+        "126",
+        0
+      ],
+      "filename_prefix": "product_lock/demo/B05_layout"
+    }
+  },
+  "61": {
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "留档 · 模型原始输出"
+    },
+    "inputs": {
+      "images": [
+        "22",
+        0
+      ],
+      "filename_prefix": "product_lock/demo/B05_raw"
+    }
+  },
+  "62": {
+    "class_type": "MaskToImage",
+    "_meta": {
+      "title": "保护区转图"
+    },
+    "inputs": {
+      "mask": [
+        "43",
+        0
+      ]
+    }
+  },
+  "63": {
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "留档 · 保护区"
+    },
+    "inputs": {
+      "images": [
+        "62",
+        0
+      ],
+      "filename_prefix": "product_lock/demo/B05_protect"
+    }
+  },
+  "64": {
+    "class_type": "MaskToImage",
+    "_meta": {
+      "title": "最终许可区转图"
+    },
+    "inputs": {
+      "mask": [
+        "49",
+        0
+      ]
+    }
+  },
+  "65": {
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "留档 · 最终许可区"
+    },
+    "inputs": {
+      "images": [
+        "64",
+        0
+      ],
+      "filename_prefix": "product_lock/demo/B05_edit"
+    }
+  }
+}

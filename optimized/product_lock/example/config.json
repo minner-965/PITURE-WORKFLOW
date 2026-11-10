@@ -1,0 +1,29 @@
+{
+  "name": "商品像素锁定_快餐盘示例",
+  "canvas": 1024,
+  "output": 800,
+  "background": {"path": "ComfyProductPipeline/lock_demo/background.png", "size": [1024, 1024]},
+  "placements": [
+    {
+      "cutout": "ComfyProductPipeline/lock_demo/plate_red_rear_rgba.png",
+      "size": [3500, 2000],
+      "width": 520, "x": 470, "y": 250
+    },
+    {
+      "cutout": "ComfyProductPipeline/lock_demo/plate_red_front_rgba.png",
+      "size": [3500, 2000],
+      "width": 832, "x": 96, "y": 430,
+      "food_mask": "ComfyProductPipeline/lock_demo/plate_red_front_food.png",
+      "food_mask_size": [3500, 2000]
+    }
+  ],
+  "edit_band_px": 96,
+  "edge_protect_px": 3,
+  "feather_px": 8,
+  "prompt": "Keep the photograph exactly as it is. Add a soft natural contact shadow and a faint tabletop reflection directly under both plates, matching the warm daylight coming from the upper left. On the front plate, serve a low, naturally spread portion of steamed white rice with stir-fried pork strips and soft green pepper, lightly coated in a glossy brown sauce, with small shadows where the food touches the white surface. Leave a wide margin of clean white plate visible around the food.",
+  "seed": 202611100001,
+  "cfg": 1.0,
+  "steps": 4,
+  "final_crop_xywh": [0, 0, 1024, 1024],
+  "filename_prefix": "product_lock/demo/B05"
+}
