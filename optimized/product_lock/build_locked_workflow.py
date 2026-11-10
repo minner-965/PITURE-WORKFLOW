@@ -17,6 +17,9 @@ import sys
 import uuid
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from prompt_lint import lint  # noqa: E402  提示词标准的同一套规则
+
 # ---- 节点登记表：UI 画布所需的输入口、控件顺序和输出口 -------------------------------------
 # (连接输入[(名,类型)], 控件输入[名], 输出[(名,类型)])
 SCHEMA = {
@@ -105,7 +108,8 @@ def build(config, base_dir=Path(".")):
     prefix = config.get("filename_prefix", "product_lock/example")
     models = {**DEFAULT_MODELS, **config.get("models", {})}
     prompt = config["prompt"].strip()
-    require(len(prompt.split()) <= 220, "正向提示词超过 220 词：商品已被像素锁定，只写落影、光线和食物即可")
+    _, prompt_errors, prompt_warnings = lint(prompt, "lock")
+    require(not prompt_errors, "提示词不符合 docs/提示词标准.md：" + "；".join(prompt_errors))
     placements = config["placements"]
     require(isinstance(placements, list) and 1 <= len(placements) <= 6, "placements 需要 1–6 件，按由后到前的顺序")
 
@@ -227,7 +231,7 @@ def build(config, base_dir=Path(".")):
     g["65"] = node("SaveImage", "留档 · 最终许可区", images=["64", 0], filename_prefix=f"{prefix}_edit")
 
     check(g)
-    identity = dict(method="product_pixel_lock", canvas=canvas, output=output, edit_band_px=band,
+    identity = dict(prompt_warnings=prompt_warnings, method="product_pixel_lock", canvas=canvas, output=output, edit_band_px=band,
                     edge_protect_px=edge, feather_px=feather, cfg=cfg, steps=steps, seed=seed,
                     models=models, placements=record, final_crop_xywh=crop,
                     outputs={"23": "result", "26": f"{output}", "60": "layout", "61": "raw", "63": "protect", "65": "edit"})
@@ -327,6 +331,8 @@ def main():
     name = config.get("name", "商品像素锁定")
     for suffix, value in (("api", graph), ("ui", to_ui(graph, name, NOTE)), ("identity", identity)):
         (out / f"{name}.{suffix}.json").write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    for warning in identity["prompt_warnings"]:
+        print("提示词提醒：" + warning)
     hero = max(identity["placements"], key=lambda entry: entry["placed"][2])
     print(f"已生成 {name}：{len(graph)} 个节点，{len(identity['placements'])} 件商品，"
           f"最大一件占画宽 {hero['width_ratio']:.0%}")
